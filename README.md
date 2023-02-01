@@ -17,7 +17,7 @@ The ingest of status telemetry data has the format:
 <timestamp>|<satellite-id>|<red-high-limit>|<yellow-high-limit>|<yellow-low-limit>|<red-low-limit>|<raw-value>|<component>
 ```
 
-You may assume that the input files are correctly formatted. Error handling for invalid input files may be ommitted.
+You may assume that the input files are correctly formatted. Error handling for invalid input files may be omitted.
 
 ### Output Format
 The output will specify alert messages.  The alert messages should be valid JSON with the following properties:
@@ -55,7 +55,7 @@ The following may be used as sample input and output datasets.
 20180101 23:05:07.421|1001|17|15|9|8|7.9|BATT
 ```
 
-### Ouput
+### Output
 
 ```javascript
 [
