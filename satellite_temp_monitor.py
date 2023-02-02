@@ -31,7 +31,8 @@ class SatelliteTempMonitor:
                 print(line_data)
                 time = datetime.strptime(
                     line_data[0], "%Y%m%d %H:%M:%S.%f"
-                )  # ToDo: use a loop here
+                )  # ToDo: use a loop to assign to these data vals
+                time = line_data[0]
                 id = line_data[1]
                 red_high_limit = line_data[2]
                 yellow_high_limit = line_data[3]
@@ -40,28 +41,24 @@ class SatelliteTempMonitor:
                 raw_value = line_data[6]
                 component = line_data[7]
 
+                is_error = False
                 if component == "BATT":  # care if under red low
                     if raw_value < red_low_limit:
-                        if id in self.satellite_errors:
-                            if component in self.satellite_errors[id]:
-                                self.satellite_errors[id][component].append(time)
-                            else:
-                                self.satellite_errors = {id: {component: [time]}}
-
-                            if len(self.satellite_errors[id][component]) >= 3:
-                                if time - self.satellite_errors[id][component][0] < 5:
-                                    print("ZZZ")
-                        else:
-                            self.satellite_errors = {id: {component: [time]}}
+                        is_error = True
                 elif component == "TSTAT":
                     if raw_value > red_high_limit:
-                        if id in self.satellite_errors:
-                            if component in self.satellite_errors[id]:
-                                self.satellite_errors[id][component].append(time)
-                            else:
-                                self.satellite_errors = {id: {component: [time]}}
-                        else:
-                            self.satellite_errors = {id: {component: [time]}}
+                        is_error = True
+                if is_error:
+                    if id not in self.satellite_errors:
+                        self.satellite_errors[id] = {component: [time]}
+                    elif component not in self.satellite_errors[id]:
+                        self.satellite_errors[id][component] = [time]
+                    else:
+                        self.satellite_errors[id][component].append(time)
+
+                        # if component in self.satellite_errors[id]:
+                        #     self.satellite_errors[id][component].append(time)
+
             print(self.satellite_errors)
 
         # print(self.satellite_data.values())
