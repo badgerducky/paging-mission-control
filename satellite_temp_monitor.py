@@ -21,19 +21,48 @@ class SatelliteTempMonitor:
             "component",
         ]
         self.satellite_data = {}
+        self.satellite_ids = []
+        self.satellite_errors = {}  # id : {component: timestamp}
 
     def file_ingest(self):
         with open(self.TELEMETRY_DATA_FILE_PATH, "r", encoding="ASCII") as file:
             while line := file.readline().rstrip():
-                line_values = line.split("|")
-                data_line = self.map_fields(line_values)
-                id = data_line.pop("satellite-id")
-                timestamp = data_line.pop("timestamp")
+                line_data = line.split("|")
+                print(line_data)
+                time = datetime.strptime(
+                    line_data[0], "%Y%m%d %H:%M:%S.%f"
+                )  # ToDo: use a loop here
+                id = line_data[1]
+                red_high_limit = line_data[2]
+                yellow_high_limit = line_data[3]
+                yellow_low_limit = line_data[4]
+                red_low_limit = line_data[5]
+                raw_value = line_data[6]
+                component = line_data[7]
 
-                if id in self.satellite_data:
-                    self.satellite_data[id][timestamp] = data_line
-                else:
-                    self.satellite_data[id] = {timestamp: data_line}
+                if component == "BATT":  # care if under red low
+                    if raw_value < red_low_limit:
+                        if id in self.satellite_errors:
+                            if component in self.satellite_errors[id]:
+                                self.satellite_errors[id][component].append(time)
+                            else:
+                                self.satellite_errors = {id: {component: [time]}}
+
+                            if len(self.satellite_errors[id][component]) >= 3:
+                                if time - self.satellite_errors[id][component][0] < 5:
+                                    print("ZZZ")
+                        else:
+                            self.satellite_errors = {id: {component: [time]}}
+                elif component == "TSTAT":
+                    if raw_value > red_high_limit:
+                        if id in self.satellite_errors:
+                            if component in self.satellite_errors[id]:
+                                self.satellite_errors[id][component].append(time)
+                            else:
+                                self.satellite_errors = {id: {component: [time]}}
+                        else:
+                            self.satellite_errors = {id: {component: [time]}}
+            print(self.satellite_errors)
 
         # print(self.satellite_data.values())
 
@@ -57,13 +86,7 @@ class SatelliteTempMonitor:
         sat_ids = self.satellite_data.keys()
         for id in self.satellite_data.keys():
             for time in self.satellite_data[id]:
-                time_val = datetime.strptime(time, "%Y%m%d %H:%M:%S.%f")
-                red_high = self.satellite_data[id][time]["red-high"]
-                yellow_high_limit = self.satellite_data[id][time]["yellow-high-limit"]
-                yellow_low_limit = self.satellite_data[id][time]["yellow-low-limit"]
-                red_low_limit = self.satellite_data[id][time]["red-low-limit"]
-                raw_value = self.satellite_data[id][time]["raw-value"]
-                component = self.satellite_data[id][time]["component"]
+                pass
 
     def output_alert_message(self):
         pass
