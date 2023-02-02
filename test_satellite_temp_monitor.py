@@ -1,19 +1,6 @@
 import unittest
 from satellite_temp_monitor import SatelliteTempMonitor
 
-
-class TestSatteliteMonitor(unittest.TestCase):
-    def test_ingest(self):
-        stm = SatelliteTempMonitor()
-        print(stm.file_ingest())
-        for i in sample_data_list:
-            i.split("|")
-        self.assertEqual(7, 6, "Should be 6")
-
-
-if __name__ == "__main__":
-    unittest.main()
-
 sample_data_list = [
     "20180101 23:01:05.001|1001|101|98|25|20|99.9|TSTAT",
     "20180101 23:01:09.521|1000|17|15|9|8|7.8|BATT",
@@ -30,3 +17,28 @@ sample_data_list = [
     "20180101 23:05:05.021|1001|101|98|25|20|89.9|TSTAT",
     "20180101 23:05:07.421|1001|17|15|9|8|7.9|BATT",
 ]
+
+
+class TestSatteliteMonitor(unittest.TestCase):
+    def test_ingest(self):
+        stm = SatelliteTempMonitor()
+        stm.file_ingest()
+        for i in sample_data_list:
+            val = i.split("|")
+            # Check that all satellite id's have made it into data dictionary
+            self.assertIn(
+                val[1],
+                stm.satellite_data.keys(),
+                "all satellite id's should be reflected as keys",
+            )
+            # Check that all timestamps have made it into data dictionary
+            self.assertIn(val[0], stm.satellite_data[val[1]].keys())
+
+    def test_message_gen(self):
+        stm = SatelliteTempMonitor()
+        stm.file_ingest()
+        stm.find_violations()
+
+
+if __name__ == "__main__":
+    unittest.main()
