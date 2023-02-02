@@ -9,64 +9,65 @@ def map_fields(expected_fields, line):
 
 import os
 
-# A monitoring and alert application that processes status telemetry data from the satellites and generates alert messages in cases of certain limit violation scenarios.
-# Python version: 3.10.9
-# Input: An ASCII text file containing pipe delimited records.
-# Output: Display alert messages on console
-""" ex: {
-            "satelliteId": 1234,
-            "severity": "severity",
-            "component": "component",
-            "timestamp": "timestamp"
+# Input: satellite data as an ASCII file with pipe delimited records.
+# Output: satellite id, severity of incident, related component, and timestamp.
+class SatelliteTempMonitor:
+    def __init__(self, filename=None) -> None:
+
+        INPUT_FILE = "test_input_provided.txt"
+        if filename:
+            INPUT_FILE = filename
+        self.TELEMETRY_DATA_FILE_PATH = os.getcwd() + "//" + INPUT_FILE
+        self.EXPECTED_FIELDS = [
+            "timestamp",
+            "satellite-id",
+            "red-high-limit",
+            "yellow-high-limit",
+            "yellow-low-limit",
+            "red-low-limit",
+            "raw-value",
+            "component",
+        ]
+        self.satellite_data = {}
+
+    def file_ingest(self):
+
+        # Read in from file
+        with open(self.TELEMETRY_DATA_FILE_PATH, "r", encoding="ASCII") as file:
+            while line := file.readline().rstrip():
+                print(line.split("|"))
+                line_values = line.split("|")
+                data_line = map_fields(self.EXPECTED_FIELDS, line_values)
+                id = data_line.pop("satellite-id")
+                timestamp = data_line.pop("timestamp")
+
+                if id in self.satellite_data:
+                    self.satellite_data[id][timestamp] = data_line
+                else:
+                    self.satellite_data[id] = {timestamp: data_line}
+
+        print(self.satellite_data.values())
+
+        # <timestamp>|<satellite-id>|<red-high-limit>|<yellow-high-limit>|<yellow-low-limit>|<red-low-limit>|<raw-value>|<component>
+
+        # ToDo: read data, need to hold first timestamp for each satellite's component
+        #     Process
+
+        #     Display
+
+    def find_violations(self):
+        ## Requirements
+        # Ingest status telemetry data and create alert messages for the following violation conditions:
+        # - If for the same satellite there are three battery voltage readings that are under the red low limit within a five minute interval.
+        # - If for the same satellite there are three thermostat readings that exceed the red high limit within a five minute interval.
+        print(self.satellite_data)
+        pass
+
+    def output_alert_message(self):
+        pass
+        """ex: {
+        "satelliteId": 1234,
+        "severity": "severity",
+        "component": "component",
+        "timestamp": "timestamp"
         }"""
-
-
-## Requirements
-# Ingest status telemetry data and create alert messages for the following violation conditions:
-
-# - If for the same satellite there are three battery voltage readings that are under the red low limit within a five minute interval.
-# - If for the same satellite there are three thermostat readings that exceed the red high limit within a five minute interval.
-
-
-# Layout:
-#     Ingest
-
-# ToDo:
-# Constant for file to read from
-INPUT_FILE = "test_input_provided.txt"
-TELEMETRY_DATA_FILE_PATH = os.getcwd() + "//" + INPUT_FILE
-expected_fields = [
-    "timestamp",
-    "satellite-id",
-    "red-high-limit",
-    "yellow-high-limit",
-    "yellow-low-limit",
-    "red-low-limit",
-    "raw-value",
-    "component",
-]
-
-satellite_data = {}
-
-# Read in from file
-with open(TELEMETRY_DATA_FILE_PATH, "r", encoding="ASCII") as file:
-    while line := file.readline().rstrip():
-        print(line.split("|"))
-        line_values = line.split("|")
-        data_line = map_fields(expected_fields, line_values)
-        id = data_line.pop("satellite-id")
-        timestamp = data_line.pop("timestamp")
-
-        if id in satellite_data:
-            satellite_data[id][timestamp] = data_line
-        else:
-            satellite_data[id] = {timestamp: data_line}
-
-print(satellite_data.values())
-
-# <timestamp>|<satellite-id>|<red-high-limit>|<yellow-high-limit>|<yellow-low-limit>|<red-low-limit>|<raw-value>|<component>
-
-# ToDo: read data, need to hold first timestamp for each satellite's component
-#     Process
-
-#     Display
