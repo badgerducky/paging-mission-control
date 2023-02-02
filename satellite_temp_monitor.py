@@ -1,8 +1,9 @@
 # Function to take a line of data and a list of expected field names and turn it into easy to use data
-def map_data(expected_fields, line):
+def map_fields(expected_fields, line):
     data = {}
     for i, j in zip(expected_fields, line):
         data[i] = j
+
     return data
 
 
@@ -51,12 +52,17 @@ satellite_data = {}
 with open(TELEMETRY_DATA_FILE_PATH, "r", encoding="ASCII") as file:
     while line := file.readline().rstrip():
         print(line.split("|"))
-        mapped_line = map_data(expected_fields, line.split("|"))
-        if mapped_line["satellite-id"] not in satellite_data:
-            satellite_data[mapped_line.pop("satellite-id")] = {
-                mapped_line.pop("timestamp"): mapped_line
-            }
-print(satellite_data)
+        line_values = line.split("|")
+        data_line = map_fields(expected_fields, line_values)
+        id = data_line.pop("satellite-id")
+        timestamp = data_line.pop("timestamp")
+
+        if id in satellite_data:
+            satellite_data[id][timestamp] = data_line
+        else:
+            satellite_data[id] = {timestamp: data_line}
+
+print(satellite_data.values())
 
 # <timestamp>|<satellite-id>|<red-high-limit>|<yellow-high-limit>|<yellow-low-limit>|<red-low-limit>|<raw-value>|<component>
 
