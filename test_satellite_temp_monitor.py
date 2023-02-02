@@ -17,27 +17,42 @@ sample_data_list = [
     "20180101 23:05:05.021|1001|101|98|25|20|89.9|TSTAT",
     "20180101 23:05:07.421|1001|17|15|9|8|7.9|BATT",
 ]
+sample_BATT_errors = [
+    "20180101 23:01:09.521|1000|17|15|9|8|7.8|BATT",
+    "20180101 23:02:11.302|1000|17|15|9|8|7.7|BATT",
+    "20180101 23:04:11.531|1000|17|15|9|8|7.9|BATT",
+    "20180101 23:05:07.421|1001|17|15|9|8|7.9|BATT",
+]
 
 
 class TestSatteliteMonitor(unittest.TestCase):
-    def test_ingest(self):
-        stm = SatelliteTempMonitor()
-        stm.file_ingest()
-        # for i in sample_data_list:
-        #     val = i.split("|")
-        #     # Check that all satellite id's have made it into data dictionary
-        #     self.assertIn(
-        #         val[1],
-        #         stm.satellite_data.keys(),
-        #         "all satellite id's should be reflected as keys",
-        #     )
-        # Check that all timestamps have made it into data dictionary
-        # self.assertIn(val[0], stm.satellite_data[val[1]].keys())
-
-    # def test_message_gen(self):
+    # def test_ingest(self):
     #     stm = SatelliteTempMonitor()
     #     stm.file_ingest()
-    #     stm.find_violations()
+    #     # for i in sample_data_list:
+    #     #     val = i.split("|")
+    #     #     # Check that all satellite id's have made it into data dictionary
+    #     #     self.assertIn(
+    #     #         val[1],
+    #     #         stm.satellite_data.keys(),
+    #     #         "all satellite id's should be reflected as keys",
+    #     #     )
+    #     # Check that all timestamps have made it into data dictionary
+    #     # self.assertIn(val[0], stm.satellite_data[val[1]].keys())
+
+    def test_battery_error_detection(self):
+        stm = SatelliteTempMonitor()
+        stm.file_ingest()
+        timestamps = []
+        for i in sample_data_list:
+            val = i.split("|")
+            timestamps.append(val[0])
+        for i in stm.satellite_errors:
+            for j in stm.satellite_errors[i]:
+                for k in stm.satellite_errors[i][j]:
+                    self.assertIn(
+                        k, timestamps, "expected timestamp not found in errors"
+                    )
 
 
 if __name__ == "__main__":

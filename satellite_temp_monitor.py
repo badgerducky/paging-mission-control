@@ -28,44 +28,58 @@ class SatelliteTempMonitor:
         with open(self.TELEMETRY_DATA_FILE_PATH, "r", encoding="ASCII") as file:
             while line := file.readline().rstrip():
                 line_data = line.split("|")
-                print(line_data)
+                # print(line_data)
                 time = datetime.strptime(
                     line_data[0], "%Y%m%d %H:%M:%S.%f"
                 )  # ToDo: use a loop to assign to these data vals
                 time = line_data[0]
                 id = line_data[1]
                 red_high_limit = line_data[2]
-                yellow_high_limit = line_data[3]
-                yellow_low_limit = line_data[4]
+                # yellow_high_limit = line_data[3]
+                # yellow_low_limit = line_data[4]
                 red_low_limit = line_data[5]
                 raw_value = line_data[6]
                 component = line_data[7]
 
                 is_error = False
                 if component == "BATT":  # care if under red low
-                    if raw_value < red_low_limit:
+                    if float(raw_value) < float(red_low_limit):
                         is_error = True
                 elif component == "TSTAT":
-                    if raw_value > red_high_limit:
+                    if float(raw_value) > float(red_high_limit):
                         is_error = True
+                        print(self.satellite_errors)
+                        print(line_data)
                 if is_error:
+
                     if id not in self.satellite_errors:
                         self.satellite_errors[id] = {component: [time]}
                     elif component not in self.satellite_errors[id]:
                         self.satellite_errors[id][component] = [time]
                     else:
                         self.satellite_errors[id][component].append(time)
-
-                        # if component in self.satellite_errors[id]:
-                        #     self.satellite_errors[id][component].append(time)
-
-            print(self.satellite_errors)
-
-        # print(self.satellite_data.values())
-
-        # <timestamp>|<satellite-id>|<red-high-limit>|<yellow-high-limit>|<yellow-low-limit>|<red-low-limit>|<raw-value>|<component>
-
-        # ToDo: read data, need to hold first timestamp for each satellite's component
+                        first = datetime.strptime(
+                            self.satellite_errors[id][component][0],
+                            "%Y%m%d %H:%M:%S.%f",
+                        )
+                        current = datetime.strptime(time, "%Y%m%d %H:%M:%S.%f")
+                        time_difference = (
+                            current - first
+                        ).total_seconds() / 60  # convert to minutes
+                        if time_difference < 5:
+                            # happened within a 5 second interval
+                            if len(self.satellite_errors[id][component]) >= 3:
+                                # ToDo: turn this into a method -- and throw it in with the dictionary you already have or something
+                                print("satelliteId", id)
+                                # print("severity", severity)
+                                print("component", component)
+                                print(
+                                    "timestamp", self.satellite_errors[id][component][0]
+                                )
+                                self.satellite_errors[id].pop(component)
+                                print()
+                    # Data is present, now check first timestamp and current, see if they are 5 apart
+                    # Then check if there are three timestamps or not
 
     # Method to take a line of data and a list of expected field names and turn it into easy to use data
     def map_fields(self, line):
