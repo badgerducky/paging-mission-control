@@ -28,7 +28,7 @@ class SatelliteTempMonitor:
         with open(self.TELEMETRY_DATA_FILE_PATH, "r", encoding="ASCII") as file:
             while line := file.readline().rstrip():
                 line_data = line.split("|")
-                print(line_data)
+                # print(line_data)
                 time = datetime.strptime(
                     line_data[0], "%Y%m%d %H:%M:%S.%f"
                 )  # ToDo: use a loop to assign to these data vals
@@ -55,9 +55,6 @@ class SatelliteTempMonitor:
                         self.satellite_errors[id][component] = [time]
                     else:
                         self.satellite_errors[id][component].append(time)
-
-                        # if component in self.satellite_errors[id]:
-                        #     self.satellite_errors[id][component].append(time)
 
             print(self.satellite_errors)
 
