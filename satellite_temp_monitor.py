@@ -60,7 +60,6 @@ class SatelliteTempMonitor:
                                 timestamp = ""
                                 for i, j in zip(temp_times, append_codes):
                                     timestamp += i + j
-                                print(timestamp)
                                 self.create_alert(
                                     id,
                                     severity,
