@@ -23,6 +23,6 @@
     1. Open file "test_satellite_temp_monitor.py"
     1. Modify the SatelliteTempMonitor class initialization arguments to specify file in this folder or full filepath
     1. To submit a file with full windows filepath you will need to add extra "\" manually : 'SatelliteTempMonitor(C:\\\Users\\\path\\\to\\\my_file.txt)'
-    1. To submit a file that is present in this project folder: 'SatelliteTempMonitor(my_file.txt)'
-    1. Modify the .txt file in "with open("test_output_provided.txt") as f:" to the expected output .txt file for your test (line 15)
+    1. To submit a file that is present in this project folder: 'SatelliteTempMonitor(my_file.txt)' (line 13)
+    1. Assign the expected output file to the variable: "EXPECTED_OUTPUT_FILE" for your test (line 10)
 1. run test: 'python test_satellite_temp_monitor.py'
