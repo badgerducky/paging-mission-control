@@ -41,15 +41,13 @@ class SatelliteTempMonitor:
                         self.satellite_errors[id][component] = [time]
                     else:
                         self.satellite_errors[id][component].append(time)
-                        first = datetime.strptime(
-                            self.satellite_errors[id][component][0],
-                            "%Y%m%d %H:%M:%S.%f",
+                        first = self.get_datetime_object(
+                            self.satellite_errors[id][component][0]
                         )
-                        current = datetime.strptime(time, "%Y%m%d %H:%M:%S.%f")
-                        time_difference = (
-                            current - first
-                        ).total_seconds() / 60  # convert to minutes
+                        current = self.get_datetime_object(time)
+                        time_difference = self.get_time_difference(first, current)
                         if time_difference <= 5:
+
                             if len(self.satellite_errors[id][component]) == 3:
                                 severity = self.find_severity(component)
                                 timestamp = (
@@ -62,19 +60,14 @@ class SatelliteTempMonitor:
                                     component,
                                     timestamp,
                                 )
-                                print(self.satellite_errors)
                                 self.satellite_errors[id].pop(component)
-                                print(self.satellite_errors)
-                            elif len(self.satellite_errors[id][component]) > 3:
-                                print("HUGE ERROR")
 
                         elif time_difference > 5:
                             self.satellite_errors[id][component].remove(
                                 self.satellite_errors[id][component][0]
                             )
-                            first = datetime.strptime(
-                                self.satellite_errors[id][component][0],
-                                "%Y%m%d %H:%M:%S.%f",
+                            first = self.get_datetime_object(
+                                self.satellite_errors[id][component][0]
                             )
 
             self.output_alerts()
@@ -90,6 +83,20 @@ class SatelliteTempMonitor:
             if float(raw_value) > float(red_high_limit):
                 return True
         return False
+
+    def get_datetime_object(self, timestamp):
+        # Return a datetime object of given timestamp
+        # Expects timestamp of form: 20180101 23:01:05.001
+        return datetime.strptime(
+            timestamp,
+            "%Y%m%d %H:%M:%S.%f",
+        )
+
+    def get_time_difference(self, timestamp1, timestamp2):
+        # Return time difference given datetime objects, timestamp1 is intended to be the oldest of the two
+        time_difference_seconds = (timestamp2 - timestamp1).total_seconds()
+        time_difference_minutes = time_difference_seconds / 60  # convert to minutes
+        return time_difference_minutes
 
     def find_severity(self, component):
         # Determine severity based on component
