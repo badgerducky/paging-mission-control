@@ -50,11 +50,22 @@ class SatelliteTempMonitor:
                         if time_difference <= 5:
                             if len(self.satellite_errors[id][component]) >= 3:
                                 severity = self.find_severity(component)
+                                temp_times = str(
+                                    datetime.strptime(
+                                        self.satellite_errors[id][component][0],
+                                        "%Y%m%d %H:%M:%S.%f",
+                                    )
+                                ).split(" ")
+                                append_codes = ["T", "Z"]
+                                timestamp = ""
+                                for i, j in zip(temp_times, append_codes):
+                                    timestamp += i + j
+                                print(timestamp)
                                 self.create_alert(
                                     id,
                                     severity,
                                     component,
-                                    self.satellite_errors[id][component][0],
+                                    timestamp,
                                 )
                                 self.satellite_errors[id].pop(component)
             self.output_alerts()
@@ -85,7 +96,7 @@ class SatelliteTempMonitor:
         error_message["satelliteId"] = satellite_id
         error_message["severity"] = severity
         error_message["component"] = component
-        error_message["timestamp"] = timestamp + "Z"
+        error_message["timestamp"] = timestamp
 
         self.satellite_error_output.append(error_message)
 
