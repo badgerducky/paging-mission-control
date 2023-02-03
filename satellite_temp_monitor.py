@@ -23,9 +23,7 @@ class SatelliteTempMonitor:
         with open(self.DATA_FILE_PATH, "r", encoding="ASCII") as file:
             while line := file.readline().rstrip():
                 line_data = line.split("|")
-                time = line_data[
-                    0
-                ]  # could package these into a dict, but unsure it would be much help
+                time = line_data[0]
                 id = line_data[1]
                 red_high_limit = line_data[2]
                 # yellow_high_limit = line_data[3]
