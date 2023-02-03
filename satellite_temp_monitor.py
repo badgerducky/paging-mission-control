@@ -17,6 +17,11 @@ class SatelliteTempMonitor:
         self.satellite_errors = {}  # id : {component: timestamp}
         self.satellite_error_output = []
 
+    def run_pipeline(self):
+        # Ingest data and output a list of alerts
+        self.file_ingest()
+        self.output_alerts()
+
     def file_ingest(self):
         # main method, this will ingest data from file and display resulting alerts
         with open(self.DATA_FILE_PATH, "r", encoding="ASCII") as file:
@@ -60,8 +65,6 @@ class SatelliteTempMonitor:
 
                         elif time_difference > 5:
                             self.satellite_errors[id][component].remove(first_timestamp)
-
-            self.output_alerts()
 
     def is_error(self, component, raw_value, red_low_limit, red_high_limit):
         # Ingest status telemetry data and create alert messages for the following violation conditions:

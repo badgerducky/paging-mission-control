@@ -27,7 +27,7 @@ expected_errors = [
 class TestSatteliteMonitor(unittest.TestCase):
     def test_error_output(self):
         stm = SatelliteTempMonitor()
-        stm.file_ingest()
+        stm.run_pipeline()
         with open("test_output_provided.txt") as f:
             expected = json.load(f)
         self.assertEqual(stm.satellite_error_output, expected)
