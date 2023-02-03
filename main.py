@@ -2,8 +2,8 @@ from satellite_temp_monitor import SatelliteTempMonitor
 
 
 def main():
-    stm = SatelliteTempMonitor()
-    stm.file_ingest()
+    stm = SatelliteTempMonitor("test_input_extended_longer.txt")
+    stm.run_pipeline()
 
 
 if __name__ == "__main__":
