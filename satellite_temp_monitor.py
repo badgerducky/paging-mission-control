@@ -1,13 +1,12 @@
 import os
-
+import json
 from datetime import datetime
-from pprint import pprint
+
 
 # Input: satellite data as an ASCII file with pipe delimited records.
 # Output: satellite id, severity of incident, related component, and timestamp.
 class SatelliteTempMonitor:
     def __init__(self, filename=None, full_path=False) -> None:
-
         INPUT_FILE = "test_input_provided.txt"
         if filename:
             INPUT_FILE = filename
@@ -86,7 +85,7 @@ class SatelliteTempMonitor:
     def create_alert(self, satellite_id, severity, component, timestamp):
         # Generate alert as dict and append to list of alerts
         error_message = {}
-        error_message["satelliteId"] = satellite_id
+        error_message["satelliteId"] = int(satellite_id)
         error_message["severity"] = severity
         error_message["component"] = component
         error_message["timestamp"] = timestamp
@@ -95,4 +94,4 @@ class SatelliteTempMonitor:
 
     def output_alerts(self):
         # Output list of alerts
-        pprint(self.satellite_error_output)
+        print(json.dumps(self.satellite_error_output, indent=4))
