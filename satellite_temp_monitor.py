@@ -66,7 +66,7 @@ class SatelliteTempMonitor:
                         time_difference = (
                             current - first
                         ).total_seconds() / 60  # convert to minutes
-                        if time_difference < 5:
+                        if time_difference <= 5:
                             # happened within a 5 second interval
                             if len(self.satellite_errors[id][component]) >= 3:
                                 # ToDo: turn this into a method -- and throw it in with the dictionary you already have or something
