@@ -6,13 +6,11 @@ from datetime import datetime
 # Input: satellite data as an ASCII file with pipe delimited records.
 # Output: satellite id, severity of incident, related component, and timestamp.
 class SatelliteTempMonitor:
-    def __init__(self, filename=None, full_path=False) -> None:
+    def __init__(self, filename=None) -> None:
         INPUT_FILE = "test_input_provided.txt"
         if filename:
-            INPUT_FILE = filename
-        self.DATA_FILE_PATH = os.getcwd() + "//" + INPUT_FILE
-        if full_path:
-            self.DATA_FILE_PATH = INPUT_FILE
+            INPUT_FILE = str(filename)
+        self.DATA_FILE_PATH = INPUT_FILE
 
         self.satellite_errors = {}  # id : {component: timestamp}
         self.satellite_error_output = []

@@ -2,7 +2,10 @@ from satellite_temp_monitor import SatelliteTempMonitor
 
 
 def main():
-    stm = SatelliteTempMonitor("test_input_extended_longer.txt")
+    # run the SatelliteTempMonitor pipeline and produce output on terminal screen
+
+    # SatelliteTempMonitor("file.txt") will use file.txt if found in this directory
+    stm = SatelliteTempMonitor()
     stm.run_pipeline()
 
 
