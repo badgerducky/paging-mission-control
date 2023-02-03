@@ -22,15 +22,15 @@ class SatelliteTempMonitor:
         # main method, this will ingest data from file and display resulting alerts
         with open(self.DATA_FILE_PATH, "r", encoding="ASCII") as file:
             while line := file.readline().rstrip():
-                line_data = line.split("|")
-                time = line_data[0]
-                id = line_data[1]
-                red_high_limit = line_data[2]
-                # yellow_high_limit = line_data[3]
-                # yellow_low_limit = line_data[4]
-                red_low_limit = line_data[5]
-                raw_value = line_data[6]
-                component = line_data[7]
+                line_fields = line.split("|")
+                time = line_fields[0]
+                id = line_fields[1]
+                red_high_limit = line_fields[2]
+                # yellow_high_limit = line_fields[3]
+                # yellow_low_limit = line_fields[4]
+                red_low_limit = line_fields[5]
+                raw_value = line_fields[6]
+                component = line_fields[7]
 
                 if self.is_error(component, raw_value, red_low_limit, red_high_limit):
                     if id not in self.satellite_errors:
