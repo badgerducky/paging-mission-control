@@ -21,6 +21,7 @@ class SatelliteTempMonitor:
         # main method, this will ingest data from file and display resulting alerts
         with open(self.DATA_FILE_PATH, "r", encoding="ASCII") as file:
             while line := file.readline().rstrip():
+                print(line)
                 line_fields = line.split("|")
                 time = line_fields[0]
                 id = line_fields[1]
@@ -32,7 +33,9 @@ class SatelliteTempMonitor:
                 component = line_fields[7]
 
                 if self.is_error(component, raw_value, red_low_limit, red_high_limit):
-                    if id not in self.satellite_errors:
+                    if (
+                        id not in self.satellite_errors
+                    ):  # send to method -- too long to be here
                         self.satellite_errors[id] = {component: [time]}
                     elif component not in self.satellite_errors[id]:
                         self.satellite_errors[id][component] = [time]
@@ -47,7 +50,7 @@ class SatelliteTempMonitor:
                             current - first
                         ).total_seconds() / 60  # convert to minutes
                         if time_difference <= 5:
-                            if len(self.satellite_errors[id][component]) >= 3:
+                            if len(self.satellite_errors[id][component]) == 3:
                                 severity = self.find_severity(component)
                                 timestamp = (
                                     datetime.isoformat(first, timespec="milliseconds")
@@ -59,7 +62,21 @@ class SatelliteTempMonitor:
                                     component,
                                     timestamp,
                                 )
+                                print(self.satellite_errors)
                                 self.satellite_errors[id].pop(component)
+                                print(self.satellite_errors)
+                            elif len(self.satellite_errors[id][component]) > 3:
+                                print("HUGE ERROR")
+
+                        elif time_difference > 5:
+                            self.satellite_errors[id][component].remove(
+                                self.satellite_errors[id][component][0]
+                            )
+                            first = datetime.strptime(
+                                self.satellite_errors[id][component][0],
+                                "%Y%m%d %H:%M:%S.%f",
+                            )
+
             self.output_alerts()
 
     def is_error(self, component, raw_value, red_low_limit, red_high_limit):
