@@ -26,21 +26,11 @@ sample_BATT_errors = [
 
 
 class TestSatteliteMonitor(unittest.TestCase):
-    # def test_ingest(self):
-    #     stm = SatelliteTempMonitor()
-    #     stm.file_ingest()
-    #     # for i in sample_data_list:
-    #     #     val = i.split("|")
-    #     #     # Check that all satellite id's have made it into data dictionary
-    #     #     self.assertIn(
-    #     #         val[1],
-    #     #         stm.satellite_data.keys(),
-    #     #         "all satellite id's should be reflected as keys",
-    #     #     )
-    #     # Check that all timestamps have made it into data dictionary
-    #     # self.assertIn(val[0], stm.satellite_data[val[1]].keys())
+    def test_output(self):
+        stm = SatelliteTempMonitor()
+        stm.file_ingest()
 
-    def test_battery_error_detection(self):
+    def test_error_detection(self):
         stm = SatelliteTempMonitor()
         stm.file_ingest()
         timestamps = []
