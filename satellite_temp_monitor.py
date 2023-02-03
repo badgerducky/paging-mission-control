@@ -19,6 +19,7 @@ class SatelliteTempMonitor:
         self.satellite_error_output = []
 
     def file_ingest(self):
+        # main method, this will ingest data from file and display resulting alerts
         with open(self.DATA_FILE_PATH, "r", encoding="ASCII") as file:
             while line := file.readline().rstrip():
                 line_data = line.split("|")
@@ -33,16 +34,7 @@ class SatelliteTempMonitor:
                 raw_value = line_data[6]
                 component = line_data[7]
 
-                severity = self.find_severity(component)
-
-                is_error = False
-                if component == "BATT":
-                    if float(raw_value) < float(red_low_limit):
-                        is_error = True
-                elif component == "TSTAT":
-                    if float(raw_value) > float(red_high_limit):
-                        is_error = True
-                if is_error:
+                if self.is_error(component, raw_value, red_low_limit, red_high_limit):
                     if id not in self.satellite_errors:
                         self.satellite_errors[id] = {component: [time]}
                     elif component not in self.satellite_errors[id]:
@@ -59,6 +51,7 @@ class SatelliteTempMonitor:
                         ).total_seconds() / 60  # convert to minutes
                         if time_difference <= 5:
                             if len(self.satellite_errors[id][component]) >= 3:
+                                severity = self.find_severity(component)
                                 self.create_alert(
                                     id,
                                     severity,
@@ -68,7 +61,7 @@ class SatelliteTempMonitor:
                                 self.satellite_errors[id].pop(component)
             self.output_alerts()
 
-    def find_violations(self, component, raw_value, red_low_limit, red_high_limit):
+    def is_error(self, component, raw_value, red_low_limit, red_high_limit):
         # Ingest status telemetry data and create alert messages for the following violation conditions:
         # - If for the same satellite there are three battery voltage readings that are under the red low limit within a five minute interval.
         # - If for the same satellite there are three thermostat readings that exceed the red high limit within a five minute interval.
