@@ -1,5 +1,6 @@
 
-# Requirements: Python 3.10.9 with no external dependencies
+# Requirements:
+* Python 3.10.9 with no external dependencies
 
 
 # Instructions for Windows:
