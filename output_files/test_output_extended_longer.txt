@@ -1,0 +1,38 @@
+[
+    {
+        "satelliteId": 1000,
+        "severity": "RED HIGH",
+        "component": "TSTAT",
+        "timestamp": "2018-01-01T23:01:38.001Z"
+    },
+    {
+        "satelliteId": 1000,
+        "severity": "RED LOW",
+        "component": "BATT",
+        "timestamp": "2018-01-01T23:01:09.521Z"
+    },
+    {
+        "satelliteId": 1001,
+        "severity": "RED LOW",
+        "component": "BATT",
+        "timestamp": "2018-01-01T23:30:00.000Z"
+    },
+    {
+        "satelliteId": 1001,
+        "severity": "RED LOW",
+        "component": "BATT",
+        "timestamp": "2018-01-01T23:30:02.010Z"
+    },
+    {
+        "satelliteId": 1001,
+        "severity": "RED LOW",
+        "component": "BATT",
+        "timestamp": "2018-01-01T23:30:13.009Z"
+    },
+    {
+        "satelliteId": 1001,
+        "severity": "RED LOW",
+        "component": "BATT",
+        "timestamp": "2018-01-01T23:40:00.000Z"
+    }
+]
