@@ -14,6 +14,8 @@ class SatelliteTempMonitor:
 
         self.satellite_errors = {}  # id : {component: timestamp}
         self.satellite_error_output = []
+        self.MAX_ALLOWED_ERRORS = 3
+        self.ERROR_TIME = 5  # timeframe where MAX_ALLOWED_ERRORS causes alert
 
     def run_pipeline(self):
         # Ingest data and output a list of alerts
@@ -45,14 +47,11 @@ class SatelliteTempMonitor:
                         first = self.get_datetime_object(first_timestamp)
                         current = self.get_datetime_object(time)
                         time_difference = self.get_time_difference(first, current)
-                        if time_difference <= 5:
+                        if time_difference <= self.ERROR_TIME:
 
-                            if len(self.satellite_errors[id][component]) == 3:
+                            if len(self.satellite_errors[id][component]) == self.MAX_ALLOWED_ERRORS:
                                 severity = self.find_severity(component)
-                                timestamp = (
-                                    datetime.isoformat(first, timespec="milliseconds")
-                                    + "Z"
-                                )
+                                timestamp = datetime.isoformat(first, timespec="milliseconds") + "Z"
                                 self.create_alert(
                                     id,
                                     severity,
@@ -61,7 +60,7 @@ class SatelliteTempMonitor:
                                 )
                                 self.satellite_errors[id].pop(component)
 
-                        elif time_difference > 5:
+                        elif time_difference > self.ERROR_TIME:
                             self.satellite_errors[id][component].remove(first_timestamp)
 
     def is_error(self, component, raw_value, red_low_limit, red_high_limit):
