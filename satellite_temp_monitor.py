@@ -1,4 +1,3 @@
-import os
 import json
 from datetime import datetime
 
@@ -15,7 +14,9 @@ class SatelliteTempMonitor:
         self.satellite_errors = {}  # id : {component: timestamp}
         self.satellite_error_output = []
         self.MAX_ALLOWED_ERRORS = 3
-        self.ERROR_TIME = 5  # timeframe where MAX_ALLOWED_ERRORS causes alert
+        self.ERROR_TIME = (
+            5  # timeframe where MAX_ALLOWED_ERRORS causes alert (in minutes)
+        )
 
     def run_pipeline(self):
         # Ingest data and output a list of alerts
@@ -48,10 +49,15 @@ class SatelliteTempMonitor:
                         current = self.get_datetime_object(time)
                         time_difference = self.get_time_difference(first, current)
                         if time_difference <= self.ERROR_TIME:
-
-                            if len(self.satellite_errors[id][component]) == self.MAX_ALLOWED_ERRORS:
+                            if (
+                                len(self.satellite_errors[id][component])
+                                == self.MAX_ALLOWED_ERRORS
+                            ):
                                 severity = self.find_severity(component)
-                                timestamp = datetime.isoformat(first, timespec="milliseconds") + "Z"
+                                timestamp = (
+                                    datetime.isoformat(first, timespec="milliseconds")
+                                    + "Z"
+                                )
                                 self.create_alert(
                                     id,
                                     severity,

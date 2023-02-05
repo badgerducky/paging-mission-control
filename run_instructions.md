@@ -1,11 +1,23 @@
 
 # Requirements:
-* Python 3.10.9 with no external dependencies
+* Python 3.10.9
+* Pip requirements located in requirements.txt
 
-
-# Instructions for Windows:
+# Instructions to setup environment:
 1. Open terminal
 1. Navigate to "paging-mission-control-master"
+1. Create a virtual environment: 'python -m venv .venv'
+1. Activate virtual environment: 'source .venv/bin/activate'
+    1. For Windows: '.\.venv\Scripts/activate.bat'
+1. Install project dependencies: 'pip install -r requirements.txt'
+
+
+# Instructions for Running This Project:
+### depending on your environment, "python3" may need to be substituted for "python" and "pip3" for "pip"
+1. Open terminal
+1. Navigate to "paging-mission-control-master"
+1. Activate virtual environment: 'source .venv/bin/activate'
+    1. For Windows: '.\.venv\Scripts/activate.bat'
 1. Determine file to submit:
     1. You will need to modify main.py to select a file for submission
     1. Modify the SatelliteTempMonitor class initialization arguments to specify file or full filepath
@@ -18,6 +30,8 @@
 # Instruction to Run Tests:
 1. Open terminal
 1. Navigate to "paging-mission-control-master"
+1. Activate virtual environment: 'source .venv/bin/activate'
+    1. For Windows: '.\.venv\Scripts/activate.bat'
 1. Determine file to submit
     1. To use input example from "README.md", skip indented steps
     1. Open file "test_satellite_temp_monitor.py"
