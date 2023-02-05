@@ -10,9 +10,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="A monitoring and alert application to process data from satellites and generate alert messages for limit violations."
     )
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument("-f", "--file", help="Specify a file to be processed.", type=Path)
-    group.add_argument("--folder", help="Specify a folder to be processed.", type=Path)
+    parser.add_argument("file", help="Specify a file to be processed.", type=Path)
     args = parser.parse_args()
 
     # Run the SatelliteTempMonitor pipeline and produce output on terminal screen
@@ -21,26 +19,6 @@ def main():
             print("ERROR: file not found: ", args.file)
             return
         stm = SatelliteTempMonitor(args.file)
-        stm.run_pipeline()
-    elif args.folder:  # Warning: will run ALL files in folder
-        if not isdir(args.folder):
-            print("ERROR: folder not found: ", args.folder)
-            return
-        print("Running files in directory: ", args.folder)
-        for f in listdir(args.folder):
-            print("Running file: ", f)
-            file_name = join(args.folder, f)
-            if isfile(file_name):
-                stm = SatelliteTempMonitor(file_name)
-                stm.run_pipeline()
-            print(
-                "--------------------------------------------------------------",
-                end="\n\n",
-            )
-    else:
-        print("No file specified, using default: 'input_files/test_input_provided.txt'")
-        print("--------------------------------------------------------------", end="\n\n")
-        stm = SatelliteTempMonitor()
         stm.run_pipeline()
 
 
