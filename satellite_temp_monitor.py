@@ -7,7 +7,7 @@ from pathlib import Path
 # Output: satellite id, severity of incident, related component, and timestamp.
 class SatelliteTempMonitor:
     def __init__(self, filename=None) -> None:
-        INPUT_FILE = "input_files/test_input_provided.txt"
+        INPUT_FILE = "test/input_files/test_input_provided.txt"
         if filename:
             INPUT_FILE = Path(filename)
         self.DATA_FILE_PATH = INPUT_FILE
