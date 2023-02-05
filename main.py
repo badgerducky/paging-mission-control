@@ -39,7 +39,9 @@ def main():
                 end="\n\n",
             )
     else:
-        print("No file/s specified, using default: 'test_input_provided.txt'")
+        print(
+            "No file/s specified, using default: 'input_files/test_input_provided.txt'"
+        )
         print(
             "--------------------------------------------------------------", end="\n\n"
         )
