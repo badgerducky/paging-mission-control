@@ -3,7 +3,7 @@ import json
 from satellite_temp_monitor import SatelliteTempMonitor
 
 
-class TestSatteliteMonitor(unittest.TestCase):
+class TestSatteliteMonitor:
     def test_error_output(self):
         # Will pass if the file provided to class initializer produces the output contained in "EXPECTED_OUTPUT_FILE"
 
@@ -14,7 +14,7 @@ class TestSatteliteMonitor(unittest.TestCase):
         stm.file_ingest()
         with open(EXPECTED_OUTPUT_FILE) as f:
             expected = json.load(f)
-        self.assertEqual(stm.satellite_error_output, expected)
+        assert stm.satellite_error_output == expected
 
 
 if __name__ == "__main__":
