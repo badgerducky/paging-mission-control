@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from pathlib import Path
 
 
 # Input: satellite data as an ASCII file with pipe delimited records.
@@ -8,15 +9,13 @@ class SatelliteTempMonitor:
     def __init__(self, filename=None) -> None:
         INPUT_FILE = "test_input_provided.txt"
         if filename:
-            INPUT_FILE = str(filename)
+            INPUT_FILE = Path(filename)
         self.DATA_FILE_PATH = INPUT_FILE
 
         self.satellite_errors = {}  # id : {component: timestamp}
         self.satellite_error_output = []
         self.MAX_ALLOWED_ERRORS = 3
-        self.ERROR_TIME = (
-            5  # timeframe where MAX_ALLOWED_ERRORS causes alert (in minutes)
-        )
+        self.ERROR_TIME = 5  # timeframe where MAX_ALLOWED_ERRORS causes alert (in minutes)
 
     def run_pipeline(self):
         # Ingest data and output a list of alerts
@@ -49,15 +48,9 @@ class SatelliteTempMonitor:
                         current = self.get_datetime_object(time)
                         time_difference = self.get_time_difference(first, current)
                         if time_difference <= self.ERROR_TIME:
-                            if (
-                                len(self.satellite_errors[id][component])
-                                == self.MAX_ALLOWED_ERRORS
-                            ):
+                            if len(self.satellite_errors[id][component]) == self.MAX_ALLOWED_ERRORS:
                                 severity = self.find_severity(component)
-                                timestamp = (
-                                    datetime.isoformat(first, timespec="milliseconds")
-                                    + "Z"
-                                )
+                                timestamp = datetime.isoformat(first, timespec="milliseconds") + "Z"
                                 self.create_alert(
                                     id,
                                     severity,

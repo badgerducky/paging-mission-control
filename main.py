@@ -11,7 +11,9 @@ def main():
         description="A monitoring and alert application to process data from satellites and generate alert messages for limit violations."
     )
     group = parser.add_mutually_exclusive_group()
-    group.add_argument("-f", "--file", help="Specify a file to be processed.", type=Path)
+    group.add_argument(
+        "-f", "--file", help="Specify a file to be processed.", type=Path
+    )
     group.add_argument("--folder", help="Specify a folder to be processed.", type=Path)
     args = parser.parse_args()
 
@@ -32,10 +34,15 @@ def main():
                 file_name = join(args.folder, f)
                 stm = SatelliteTempMonitor(file_name)
                 stm.run_pipeline()
-            print("--------------------------------------------------------------", end="\n\n")
+            print(
+                "--------------------------------------------------------------",
+                end="\n\n",
+            )
     else:
         print("No file/s specified, using default: 'test_input_provided.txt'")
-        print("--------------------------------------------------------------", end="\n\n")
+        print(
+            "--------------------------------------------------------------", end="\n\n"
+        )
         stm = SatelliteTempMonitor()
         stm.run_pipeline()
 
