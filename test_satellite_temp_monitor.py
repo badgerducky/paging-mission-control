@@ -13,7 +13,7 @@ class TestSatteliteMonitor:
         )  # Default: "output_files/test_output_provided.txt"
         stm = SatelliteTempMonitor(
             "input_files/test_input_extended_longer.txt"
-        )  # Defaults to: "input_files/test_input_provided.txt"
+        )  # Default: "input_files/test_input_provided.txt"
         stm.file_ingest()
         with open(EXPECTED_OUTPUT_FILE) as f:
             expected = json.load(f)
